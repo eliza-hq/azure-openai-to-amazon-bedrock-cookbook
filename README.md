@@ -1,5 +1,9 @@
 # Azure OpenAI to OpenAI on Amazon Bedrock Cookbook
 
+[![Publish GitHub Pages](https://github.com/eliza-hq/azure-openai-to-amazon-bedrock-cookbook/actions/workflows/pages.yml/badge.svg)](https://github.com/eliza-hq/azure-openai-to-amazon-bedrock-cookbook/actions/workflows/pages.yml)
+
+Read the live cookbook: https://eliza-hq.github.io/azure-openai-to-amazon-bedrock-cookbook/
+
 This public cookbook walks through migrating an Azure-first enterprise GenAI application from Azure OpenAI, Azure AI Search, Blob Storage, and Cosmos DB to OpenAI on Amazon Bedrock, Amazon OpenSearch or Bedrock Knowledge Bases, S3, and DynamoDB.
 
 The reference application is ERP Governance Workbench: a procurement/vendor governance workflow that creates durable request records, applies deterministic approval rules, retrieves policy evidence, asks the model for interpretation, drafts an escalation, and records audit events.
@@ -26,12 +30,17 @@ npx http-server site -p 4173
 
 The project has no runtime npm dependencies. The build uses Node.js only, renders one scrollable `index.html`, and stays portable across GitHub Pages, Cloudflare Pages, and AWS Amplify Hosting.
 
-## Publish With GitHub Pages
+## Deployment
 
-1. Create the public repository under the Eliza GitHub organization.
-2. Push this repo to `main`.
-3. In GitHub, open Settings -> Pages and select GitHub Actions as the source.
-4. The included workflow publishes the generated `site/` artifact.
+This repository is published with GitHub Pages at:
+
+```text
+https://eliza-hq.github.io/azure-openai-to-amazon-bedrock-cookbook/
+```
+
+GitHub Pages is configured to build from GitHub Actions. Every push to `main` runs the public-safety scanner, builds the single-page site into `site/`, and publishes that artifact.
+
+You can also trigger a deployment manually from the `Publish GitHub Pages` workflow.
 
 ## Portability
 
