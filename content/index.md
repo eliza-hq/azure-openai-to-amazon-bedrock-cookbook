@@ -17,6 +17,10 @@ The important constraint: the model does not decide approvals. Rules decide. Ret
 
 This is a reference migration pattern, not a complete production Terraform or CDK deployment. The snippets are meant to be copied into an existing Azure-first application and adapted to your organization's AWS accounts, regions, networking, identity, and compliance controls.
 
+## Validation Notebook
+
+Use the [validation notebook](notebooks/azure_openai_to_amazon_bedrock_validation.ipynb) as the executable proof bench for the cookbook. It runs the local release checks, compares sanitized Azure and AWS golden-request evidence, and skips live Bedrock unless `RUN_LIVE_BEDROCK=1`.
+
 ## What you will build
 
 By the end, you will have an AWS-backed version of the same procurement workflow:

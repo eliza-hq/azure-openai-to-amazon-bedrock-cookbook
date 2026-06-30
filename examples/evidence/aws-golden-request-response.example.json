@@ -1,0 +1,64 @@
+{
+  "request_id": "REQ-GOLDEN-AWS-001",
+  "provider": "aws_bedrock",
+  "status": "Escalated",
+  "risk_level": "High",
+  "required_approvals": [
+    "Security Review",
+    "Legal Review",
+    "CFO Approval",
+    "Executive Risk Escalation",
+    "Vendor Onboarding Review"
+  ],
+  "analysis": {
+    "deterministic_findings": [
+      "Spend Threshold",
+      "Vendor Onboarding",
+      "Security Review",
+      "Contract Review",
+      "Vendor Risk"
+    ],
+    "recommended_workflow_state": "Escalated",
+    "required_approvals": [
+      "Security Review",
+      "Legal Review",
+      "CFO Approval",
+      "Executive Risk Escalation",
+      "Vendor Onboarding Review"
+    ],
+    "policy_citations": [
+      {
+        "source_document": "procurement_policy.md",
+        "section_title": "Spend Approval Thresholds",
+        "snippet": "Purchases above 100000 USD require CFO approval and documented business justification.",
+        "relevance_score": 0.9
+      },
+      {
+        "source_document": "vendor_onboarding_handbook.md",
+        "section_title": "New Vendor Review",
+        "snippet": "New vendors must complete onboarding review before purchase order approval.",
+        "relevance_score": 0.86
+      },
+      {
+        "source_document": "risk_escalation_playbook.md",
+        "section_title": "Restricted Geography Escalation",
+        "snippet": "High-risk geography or vendor categories require executive risk escalation.",
+        "relevance_score": 0.82
+      }
+    ],
+    "model_generated_interpretation": "The migrated AWS path reaches the same operational decision while allowing narrative wording to differ.",
+    "generated_escalation": {
+      "recipient_group": "Procurement Governance",
+      "subject": "AWS validation escalation for REQ-GOLDEN-AWS-001",
+      "body": "The AWS run preserved the required approvals, escalation state, and policy evidence."
+    }
+  },
+  "audit_events": [
+    "request_submitted",
+    "rules_evaluated",
+    "workflow_status_changed",
+    "policy_retrieval_completed",
+    "llm_analysis_generated",
+    "escalation_email_drafted"
+  ]
+}

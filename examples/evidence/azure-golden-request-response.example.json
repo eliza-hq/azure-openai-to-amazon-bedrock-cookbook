@@ -1,0 +1,64 @@
+{
+  "request_id": "REQ-GOLDEN-AZURE-001",
+  "provider": "azure_openai",
+  "status": "Escalated",
+  "risk_level": "High",
+  "required_approvals": [
+    "CFO Approval",
+    "Vendor Onboarding Review",
+    "Security Review",
+    "Legal Review",
+    "Executive Risk Escalation"
+  ],
+  "analysis": {
+    "deterministic_findings": [
+      "Spend Threshold",
+      "Vendor Onboarding",
+      "Security Review",
+      "Contract Review",
+      "Vendor Risk"
+    ],
+    "recommended_workflow_state": "Escalated",
+    "required_approvals": [
+      "CFO Approval",
+      "Vendor Onboarding Review",
+      "Security Review",
+      "Legal Review",
+      "Executive Risk Escalation"
+    ],
+    "policy_citations": [
+      {
+        "source_document": "procurement_policy.md",
+        "section_title": "Spend Approval Thresholds",
+        "snippet": "Purchases above 100000 USD require CFO approval and documented business justification.",
+        "relevance_score": 0.92
+      },
+      {
+        "source_document": "vendor_onboarding_handbook.md",
+        "section_title": "New Vendor Review",
+        "snippet": "New vendors must complete onboarding review before purchase order approval.",
+        "relevance_score": 0.88
+      },
+      {
+        "source_document": "risk_escalation_playbook.md",
+        "section_title": "Restricted Geography Escalation",
+        "snippet": "High-risk geography or vendor categories require executive risk escalation.",
+        "relevance_score": 0.84
+      }
+    ],
+    "model_generated_interpretation": "The request should be escalated because it combines high spend, a new vendor, customer-data handling, and offshore data processing.",
+    "generated_escalation": {
+      "recipient_group": "Procurement Governance",
+      "subject": "Escalated review required for REQ-GOLDEN-AZURE-001",
+      "body": "Please review the high-risk vendor request and confirm required approvals."
+    }
+  },
+  "audit_events": [
+    "request_submitted",
+    "rules_evaluated",
+    "workflow_status_changed",
+    "policy_retrieval_completed",
+    "llm_analysis_generated",
+    "escalation_email_drafted"
+  ]
+}

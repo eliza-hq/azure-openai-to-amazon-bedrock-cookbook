@@ -1,6 +1,8 @@
 node_modules/
 site/
 __pycache__/
+.venv*/
+*.executed.ipynb
 .DS_Store
 .env
 .env.*

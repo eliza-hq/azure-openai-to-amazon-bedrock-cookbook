@@ -1,4 +1,5 @@
 import json
+import sys
 from pathlib import Path
 
 
@@ -15,7 +16,11 @@ ANALYSIS_FIELDS = [
 ]
 
 
-def load(path: str) -> dict:
+DEFAULT_AZURE_EVIDENCE = "examples/evidence/azure-golden-request-response.example.json"
+DEFAULT_AWS_EVIDENCE = "examples/evidence/aws-golden-request-response.example.json"
+
+
+def load(path: str | Path) -> dict:
     return json.loads(Path(path).read_text())
 
 
@@ -46,9 +51,12 @@ def assert_equal_operational_outcome(azure: dict, aws: dict) -> None:
     assert {citation["section_title"] for citation in aws_citations}
 
 
-if __name__ == "__main__":
-    assert_equal_operational_outcome(
-        load("evidence/azure-golden-request-response.json"),
-        load("evidence/aws-golden-request-response.json"),
-    )
+def main() -> None:
+    azure_path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_AZURE_EVIDENCE
+    aws_path = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_AWS_EVIDENCE
+    assert_equal_operational_outcome(load(azure_path), load(aws_path))
+    print(f"Operational outcome matches: {azure_path} -> {aws_path}")
 
+
+if __name__ == "__main__":
+    main()

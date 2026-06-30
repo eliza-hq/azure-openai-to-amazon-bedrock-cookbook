@@ -43,6 +43,9 @@ This scanner is a backstop, not a substitute for review.
 python3 -m py_compile examples/python/*.py
 shellcheck --shell=bash examples/env/*.env.example
 cfn-lint examples/infra/*.yml
+python scripts/execute-notebook.py \
+  notebooks/azure_openai_to_amazon_bedrock_validation.ipynb \
+  --output /tmp/azure_openai_to_amazon_bedrock_validation.executed.ipynb
 ```
 
 GitHub Actions runs these checks before publishing the Pages artifact. Keep examples small enough that a reviewer can tell whether they are snippets, runnable files, or templates.
@@ -105,6 +108,7 @@ This cookbook does not replace a production infrastructure review. It gives the 
 - Every code block is copyable in the rendered site.
 - The public safety scanner passes.
 - Python examples compile.
+- The validation notebook is committed output-free and executes with `RUN_LIVE_BEDROCK=0`.
 - CloudFormation and shell-style environment examples pass CI validation.
 - The GitHub Pages workflow passes.
 - A reviewer has checked all screenshots and evidence files before they are added.

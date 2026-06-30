@@ -8,13 +8,14 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const checkedRoots = [
   path.join(rootDir, "examples"),
+  path.join(rootDir, "notebooks"),
   path.join(rootDir, ".github", "workflows"),
   path.join(rootDir, ".env.example"),
 ];
 
 const sourceFiles = checkedRoots
   .flatMap((entry) => [...collect(entry)])
-  .filter((file) => /\.(env\.example|py|ya?ml)$/i.test(file));
+  .filter((file) => /\.(env\.example|ipynb|py|ya?ml)$/i.test(file));
 const findings = [];
 
 for (const file of sourceFiles) {
@@ -28,6 +29,10 @@ for (const file of sourceFiles) {
 
   if (!text.endsWith("\n")) {
     findings.push(`${rel}: missing trailing newline`);
+  }
+
+  if (file.endsWith(".ipynb")) {
+    validateNotebook(rel, text, findings);
   }
 }
 
@@ -67,6 +72,35 @@ if (result.status !== 0) {
 }
 
 console.log(`Example checks passed for ${sourceFiles.length} source files.`);
+
+function validateNotebook(rel, text, findings) {
+  let notebook;
+  try {
+    notebook = JSON.parse(text);
+  } catch (error) {
+    findings.push(`${rel}: invalid JSON notebook (${error.message})`);
+    return;
+  }
+
+  if (notebook.nbformat !== 4 || !Array.isArray(notebook.cells)) {
+    findings.push(`${rel}: expected nbformat 4 with a cells array`);
+    return;
+  }
+
+  for (const [index, cell] of notebook.cells.entries()) {
+    if (!cell.id) {
+      findings.push(`${rel}: cell ${index + 1} is missing an id`);
+    }
+    if (cell.cell_type === "code") {
+      if (cell.execution_count !== null) {
+        findings.push(`${rel}: code cell ${index + 1} should have null execution_count`);
+      }
+      if (Array.isArray(cell.outputs) && cell.outputs.length > 0) {
+        findings.push(`${rel}: code cell ${index + 1} should be committed output-free`);
+      }
+    }
+  }
+}
 
 function* collect(entry) {
   const stat = fs.statSync(entry);

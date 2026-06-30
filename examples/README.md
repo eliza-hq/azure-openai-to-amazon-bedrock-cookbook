@@ -10,6 +10,7 @@ The snippets assume:
 - GPT-5.4 and GPT-5.5 examples use the OpenAI SDK `BedrockOpenAI` client and the Responses API.
 - GPT-OSS Converse examples use `boto3` and Bedrock Runtime.
 - Secrets are loaded from the environment or a secret manager, not committed to source control.
+- `examples/evidence/` contains sanitized golden-request outputs used by the validation notebook.
 
 For local syntax checks:
 

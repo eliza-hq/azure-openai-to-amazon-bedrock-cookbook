@@ -2,6 +2,8 @@
 
 A migrated GenAI workflow is not validated by the model returning text. It is validated when the same input produces the same operational outcome.
 
+The [validation notebook](notebooks/azure_openai_to_amazon_bedrock_validation.ipynb) executes this section as a local proof bench. It uses sanitized fixtures by default and treats live Bedrock invocation as an explicit opt-in step.
+
 ## Use A Hard Request
 
 Choose a request that exercises spend, vendor onboarding, security, legal, and escalation logic.
@@ -38,8 +40,9 @@ Expected result:
 
 ## Compare Azure And AWS Responses
 
-```python examples/compare_golden_outputs.py
+```python examples/python/compare_golden_outputs.py
 import json
+import sys
 from pathlib import Path
 
 
@@ -56,7 +59,11 @@ ANALYSIS_FIELDS = [
 ]
 
 
-def load(path: str) -> dict:
+DEFAULT_AZURE_EVIDENCE = "examples/evidence/azure-golden-request-response.example.json"
+DEFAULT_AWS_EVIDENCE = "examples/evidence/aws-golden-request-response.example.json"
+
+
+def load(path: str | Path) -> dict:
     return json.loads(Path(path).read_text())
 
 
@@ -82,15 +89,20 @@ def assert_equal_operational_outcome(azure: dict, aws: dict) -> None:
 
     azure_citations = azure_analysis["policy_citations"]
     aws_citations = aws_analysis["policy_citations"]
-    assert {c["source_document"] for c in azure_citations}
-    assert {c["source_document"] for c in aws_citations}
-    assert {c["section_title"] for c in aws_citations}
+    assert {citation["source_document"] for citation in azure_citations}
+    assert {citation["source_document"] for citation in aws_citations}
+    assert {citation["section_title"] for citation in aws_citations}
 
 
-assert_equal_operational_outcome(
-    load("evidence/azure-golden-request-response.json"),
-    load("evidence/aws-golden-request-response.json"),
-)
+def main() -> None:
+    azure_path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_AZURE_EVIDENCE
+    aws_path = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_AWS_EVIDENCE
+    assert_equal_operational_outcome(load(azure_path), load(aws_path))
+    print(f"Operational outcome matches: {azure_path} -> {aws_path}")
+
+
+if __name__ == "__main__":
+    main()
 ```
 
 ## Assert The Audit Trail

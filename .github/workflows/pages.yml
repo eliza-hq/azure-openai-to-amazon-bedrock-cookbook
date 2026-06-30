@@ -36,19 +36,27 @@ jobs:
         run: npm test
 
       - name: Compile Python examples
-        run: python -m py_compile examples/python/*.py
+        run: python -m py_compile examples/python/*.py scripts/*.py
 
       - name: Install example validators
         run: |
           sudo apt-get update
           sudo apt-get install -y shellcheck
-          python -m pip install cfn-lint
+          python -m pip install cfn-lint nbclient nbformat ipykernel
 
       - name: Validate shell environment profiles
         run: shellcheck --shell=bash examples/env/*.env.example
 
       - name: Validate CloudFormation examples
         run: cfn-lint examples/infra/*.yml
+
+      - name: Execute validation notebook
+        env:
+          RUN_LIVE_BEDROCK: "0"
+        run: |
+          python scripts/execute-notebook.py \
+            notebooks/azure_openai_to_amazon_bedrock_validation.ipynb \
+            --output /tmp/azure_openai_to_amazon_bedrock_validation.executed.ipynb
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

@@ -22,6 +22,7 @@ The default model ID is `openai.gpt-5.4`. GPT-5.4 and GPT-5.5 use the Bedrock Ma
 
 - `content/` contains the source cookbook pages.
 - `examples/` contains copyable code snippets used by the walkthrough.
+- `notebooks/` contains the executable validation notebook.
 - `registry.json` controls page order, metadata, and navigation.
 - `scripts/build.mjs` renders the single-page static GitHub Pages site to `site/`.
 - `scripts/check-public-safety.mjs` scans for common public-release hazards.
@@ -43,7 +44,19 @@ npm test
 python3 -m py_compile examples/python/*.py
 ```
 
-`npm test` runs the public-safety scanner, checks example source formatting, parses Python examples, and builds the site. GitHub Actions also runs `py_compile`, validates the CloudFormation example with `cfn-lint`, and runs `shellcheck` against the shell-style environment profiles.
+`npm test` runs the public-safety scanner, checks example source formatting, parses Python examples, checks notebook structure, and builds the site. GitHub Actions also runs `py_compile`, validates the CloudFormation example with `cfn-lint`, runs `shellcheck` against the shell-style environment profiles, and executes the validation notebook with live Bedrock disabled.
+
+## Validation Notebook
+
+The notebook is the executable proof bench for the cookbook. It validates checked-in examples and sanitized golden-request evidence without cloud credentials. Live Bedrock smoke testing is skipped unless `RUN_LIVE_BEDROCK=1`.
+
+```bash
+python3 -m venv /tmp/azure-bedrock-notebook
+/tmp/azure-bedrock-notebook/bin/python -m pip install nbclient nbformat ipykernel
+RUN_LIVE_BEDROCK=0 /tmp/azure-bedrock-notebook/bin/python scripts/execute-notebook.py \
+  notebooks/azure_openai_to_amazon_bedrock_validation.ipynb \
+  --output /tmp/azure_openai_to_amazon_bedrock_validation.executed.ipynb
+```
 
 ## Deployment
 
