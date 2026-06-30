@@ -2,7 +2,7 @@
 
 A migrated GenAI workflow is not validated by the model returning text. It is validated when the same input produces the same operational outcome.
 
-The [validation notebook](notebooks/azure_openai_to_amazon_bedrock_validation.ipynb) executes this section as a local proof bench. It uses sanitized fixtures by default and treats live Bedrock invocation as an explicit opt-in step.
+The [validation notebook](https://github.com/eliza-hq/azure-openai-to-amazon-bedrock-cookbook/blob/main/notebooks/azure_openai_to_amazon_bedrock_validation.ipynb) executes this section as a local proof bench. It opens in GitHub's notebook viewer, uses sanitized fixtures by default, and treats live Bedrock invocation as an explicit opt-in step.
 
 ## Use A Hard Request
 

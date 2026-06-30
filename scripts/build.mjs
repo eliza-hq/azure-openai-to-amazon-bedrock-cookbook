@@ -13,10 +13,6 @@ let codeBlockCounter = 0;
 fs.rmSync(siteDir, { recursive: true, force: true });
 fs.mkdirSync(siteDir, { recursive: true });
 copyDir(path.join(rootDir, "assets"), path.join(siteDir, "assets"));
-const notebooksDir = path.join(rootDir, "notebooks");
-if (fs.existsSync(notebooksDir)) {
-  copyDir(notebooksDir, path.join(siteDir, "notebooks"));
-}
 
 const articleSections = registry.pages.map((page, index) => {
   const sourcePath = path.join(rootDir, page.source);
@@ -187,7 +183,7 @@ function renderLayout(articleSections) {
                 <button class="button" type="button" data-copy-page>Copy page</button>
                 <a class="button" href="${repo}">View on GitHub</a>
                 <a class="button" href="${repo}/tree/main/examples">Browse examples</a>
-                <a class="button" href="notebooks/azure_openai_to_amazon_bedrock_validation.ipynb">Validation notebook</a>
+                <a class="button" href="${repo}/blob/main/notebooks/azure_openai_to_amazon_bedrock_validation.ipynb">Validation notebook</a>
               </div>
             </header>
             <div class="markdown">

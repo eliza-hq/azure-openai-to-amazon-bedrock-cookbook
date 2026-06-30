@@ -19,7 +19,7 @@ This is a reference migration pattern, not a complete production Terraform or CD
 
 ## Validation Notebook
 
-Use the [validation notebook](notebooks/azure_openai_to_amazon_bedrock_validation.ipynb) as the executable proof bench for the cookbook. It runs the local release checks, compares sanitized Azure and AWS golden-request evidence, and skips live Bedrock unless `RUN_LIVE_BEDROCK=1`.
+Use the [validation notebook](https://github.com/eliza-hq/azure-openai-to-amazon-bedrock-cookbook/blob/main/notebooks/azure_openai_to_amazon_bedrock_validation.ipynb) as the executable proof bench for the cookbook. It opens in GitHub's notebook viewer, runs the local release checks, compares sanitized Azure and AWS golden-request evidence, and skips live Bedrock unless `RUN_LIVE_BEDROCK=1`.
 
 ## What you will build
 
