@@ -1,0 +1,47 @@
+AppRunnerInstanceRole:
+  Type: AWS::IAM::Role
+  Properties:
+    RoleName: !Sub "${ResourcePrefix}-apprunner-runtime"
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: tasks.apprunner.amazonaws.com
+          Action: sts:AssumeRole
+    Policies:
+      - PolicyName: !Sub "${ResourcePrefix}-runtime-access"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:ListBucket
+              Resource: !GetAtt PolicyBucket.Arn
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+              Resource: !Sub "${PolicyBucket.Arn}/*"
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:Query
+                - dynamodb:Scan
+                - dynamodb:UpdateItem
+                - dynamodb:BatchWriteItem
+              Resource:
+                - !GetAtt RequestsTable.Arn
+                - !GetAtt AuditEventsTable.Arn
+                - !GetAtt VendorsTable.Arn
+                - !GetAtt ApprovalMatrixTable.Arn
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+                - bedrock:InvokeModelWithResponseStream
+              Resource: !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/${BedrockModelId}"
+            - Effect: Allow
+              Action:
+                - aoss:APIAccessAll
+              Resource: !GetAtt PolicySearchCollection.Arn
+

@@ -1,0 +1,15 @@
+{
+  "name": "azure-openai-to-amazon-bedrock-cookbook",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/check-public-safety.mjs && npm run build",
+    "preview": "npm run build && npx http-server site -p 4173"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
+

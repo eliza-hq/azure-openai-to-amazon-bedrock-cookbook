@@ -1,0 +1,88 @@
+{
+  "site": {
+    "title": "Azure OpenAI to OpenAI on Amazon Bedrock Cookbook",
+    "shortTitle": "Migration Cookbook",
+    "description": "A practical engineering walkthrough for migrating an Azure OpenAI workload to OpenAI on Amazon Bedrock.",
+    "repoUrl": "https://github.com/eliza-hq/azure-openai-to-amazon-bedrock-cookbook",
+    "defaultAuthor": "brennan"
+  },
+  "pages": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "description": "What you will migrate and how to use the cookbook.",
+      "source": "content/index.md",
+      "section": "Start"
+    },
+    {
+      "id": "step-0",
+      "title": "Step 0. Freeze the workflow contract",
+      "description": "Capture the operational behavior that must survive the migration.",
+      "source": "content/step-0-workflow-contract.md",
+      "section": "Migration"
+    },
+    {
+      "id": "step-1",
+      "title": "Step 1. Map Azure services to AWS",
+      "description": "Translate the Azure production shape into AWS services.",
+      "source": "content/step-1-service-map.md",
+      "section": "Migration"
+    },
+    {
+      "id": "step-2",
+      "title": "Step 2. Parameterize configuration",
+      "description": "Move model IDs, endpoints, and resource names into environment variables.",
+      "source": "content/step-2-config-models.md",
+      "section": "Migration"
+    },
+    {
+      "id": "step-3",
+      "title": "Step 3. Move policy documents to S3",
+      "description": "Copy the policy corpus from Blob Storage to S3 without losing citation continuity.",
+      "source": "content/step-3-policy-corpus.md",
+      "section": "Migration"
+    },
+    {
+      "id": "step-4",
+      "title": "Step 4. Rebuild retrieval",
+      "description": "Re-index policy sections in OpenSearch or Bedrock Knowledge Bases.",
+      "source": "content/step-4-retrieval.md",
+      "section": "Migration"
+    },
+    {
+      "id": "step-5",
+      "title": "Step 5. Move operational state",
+      "description": "Move request, vendor, approval, and audit records from Cosmos DB to DynamoDB.",
+      "source": "content/step-5-state.md",
+      "section": "Migration"
+    },
+    {
+      "id": "step-6",
+      "title": "Step 6. Switch generation to Bedrock",
+      "description": "Call OpenAI on Amazon Bedrock while preserving the structured output contract.",
+      "source": "content/step-6-bedrock.md",
+      "section": "Migration"
+    },
+    {
+      "id": "step-7",
+      "title": "Step 7. Run golden request validation",
+      "description": "Compare Azure and AWS outputs for the same procurement request.",
+      "source": "content/step-7-validation.md",
+      "section": "Validation"
+    },
+    {
+      "id": "step-8",
+      "title": "Step 8. Cut over safely",
+      "description": "Route production traffic after the workflow, evidence, and audit trail match.",
+      "source": "content/step-8-cutover.md",
+      "section": "Validation"
+    },
+    {
+      "id": "appendix-publication-checklist",
+      "title": "Appendix: Public Release Checklist",
+      "description": "Scrub private identifiers and package the repo for public sharing.",
+      "source": "content/appendix-publication-checklist.md",
+      "section": "Reference"
+    }
+  ]
+}

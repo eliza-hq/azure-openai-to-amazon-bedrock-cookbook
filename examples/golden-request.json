@@ -1,0 +1,16 @@
+{
+  "request_type": "New Vendor Purchase",
+  "vendor_name": "DataNimbus Labs",
+  "amount": 125000,
+  "currency": "USD",
+  "requester": "requester@example.com",
+  "department": "Sales Operations",
+  "business_justification": "Data enrichment for customer health scoring and account risk modeling.",
+  "contract_length_months": 24,
+  "handles_customer_data": true,
+  "is_new_vendor": true,
+  "geography": "India",
+  "category": "Offshore Data Processing",
+  "invoice_variance_percent": 0
+}
+

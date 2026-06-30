@@ -1,0 +1,48 @@
+<svg width="980" height="340" viewBox="0 0 980 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Golden request validation</title>
+  <desc id="desc">The same golden request runs through Azure and AWS, then deterministic outputs are compared before cutover.</desc>
+  <rect width="980" height="340" rx="16" fill="#F7F7F4"/>
+  <g font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="38" y="48" fill="#0F0F0F" font-size="18" font-weight="700">Golden request validation</text>
+    <text x="38" y="72" fill="#6B6B66" font-size="13">Run the same hard request on both stacks. Compare operations, not prose.</text>
+
+    <rect x="44" y="128" width="190" height="88" rx="12" fill="#FFFFFF" stroke="#D8D8D0"/>
+    <text x="66" y="158" fill="#0F0F0F" font-size="15" font-weight="700">Golden request</text>
+    <text x="66" y="181" fill="#6B6B66" font-size="12">New vendor</text>
+    <text x="66" y="198" fill="#6B6B66" font-size="12">Customer data</text>
+
+    <rect x="320" y="92" width="190" height="88" rx="12" fill="#EAF4FF" stroke="#99C7F3"/>
+    <text x="342" y="122" fill="#164B7A" font-size="15" font-weight="700">Azure run</text>
+    <text x="342" y="145" fill="#31546F" font-size="12">OpenAI + AI Search</text>
+    <text x="342" y="162" fill="#31546F" font-size="12">Cosmos audit</text>
+
+    <rect x="320" y="212" width="190" height="88" rx="12" fill="#E7F6F1" stroke="#92D9C7"/>
+    <text x="342" y="242" fill="#0B6B57" font-size="15" font-weight="700">AWS run</text>
+    <text x="342" y="265" fill="#31554C" font-size="12">Bedrock + OpenSearch</text>
+    <text x="342" y="282" fill="#31554C" font-size="12">DynamoDB audit</text>
+
+    <rect x="608" y="128" width="168" height="88" rx="12" fill="#FFF7E6" stroke="#E2C77D"/>
+    <text x="630" y="158" fill="#7B5B00" font-size="15" font-weight="700">Compare</text>
+    <text x="630" y="181" fill="#6B520F" font-size="12">Approvals</text>
+    <text x="630" y="198" fill="#6B520F" font-size="12">State, citations, audit</text>
+
+    <rect x="832" y="128" width="110" height="88" rx="12" fill="#101010"/>
+    <text x="854" y="158" fill="#FFFFFF" font-size="15" font-weight="700">Cutover</text>
+    <text x="854" y="181" fill="#D9D9D3" font-size="12">Route traffic</text>
+    <text x="854" y="198" fill="#D9D9D3" font-size="12">Keep rollback</text>
+  </g>
+
+  <g stroke="#8A8A83" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M244 155C275 155 282 136 310 136"/>
+    <path d="M303 130L312 136L303 142"/>
+    <path d="M244 190C275 190 282 256 310 256"/>
+    <path d="M303 250L312 256L303 262"/>
+    <path d="M520 136C555 136 561 172 598 172"/>
+    <path d="M591 166L600 172L591 178"/>
+    <path d="M520 256C555 256 561 172 598 172"/>
+    <path d="M591 166L600 172L591 178"/>
+    <path d="M786 172H822"/>
+    <path d="M815 166L824 172L815 178"/>
+  </g>
+</svg>
+
