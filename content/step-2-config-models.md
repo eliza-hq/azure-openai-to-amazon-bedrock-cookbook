@@ -29,10 +29,23 @@ class Settings:
     aws_opensearch_endpoint: str = os.getenv("AWS_OPENSEARCH_ENDPOINT", "")
     aws_opensearch_index: str = os.getenv("AWS_OPENSEARCH_INDEX", "policy-sections")
 
-    # Replace this with the OpenAI model ID enabled in your Bedrock account and region.
+    # GPT-5.4/GPT-5.5 use Bedrock Mantle with the Responses API.
+    # GPT-OSS models may use Bedrock Runtime Converse/Invoke where supported.
+    aws_bedrock_api_mode: str = os.getenv("AWS_BEDROCK_API_MODE", "responses")
     aws_bedrock_model_id: str = os.getenv("AWS_BEDROCK_MODEL_ID", "openai.gpt-5.4")
     aws_bedrock_max_tokens: int = int(os.getenv("AWS_BEDROCK_MAX_TOKENS", "700"))
 ```
+
+## Match Model IDs To API Surfaces
+
+Do not assume every OpenAI model on Bedrock uses the same runtime API. Pick the model, region, and API surface together.
+
+| Model family | Bedrock endpoint | API surface | Cookbook default |
+| --- | --- | --- | --- |
+| `openai.gpt-5.4`, `openai.gpt-5.5` | `bedrock-mantle` | Responses API or Chat Completions through the OpenAI SDK | Yes |
+| `openai.gpt-oss-20b-1:0`, `openai.gpt-oss-120b-1:0` | `bedrock-runtime` | Converse, InvokeModel, or OpenAI-compatible Chat Completions where supported | Optional variant |
+
+The examples default to `openai.gpt-5.4` and `AWS_BEDROCK_API_MODE=responses`. If you switch to GPT-OSS to use Bedrock Runtime Converse, change both `AWS_BEDROCK_MODEL_ID` and `AWS_BEDROCK_API_MODE`.
 
 ## Use Separate Azure And AWS Profiles
 
@@ -60,7 +73,10 @@ export LLM_PROVIDER=aws_bedrock
 
 export AWS_REGION="us-east-1"
 export AWS_RESOURCE_PREFIX="erpgov-migration"
+export AWS_BEDROCK_API_MODE="responses"
 export AWS_BEDROCK_MODEL_ID="${AWS_BEDROCK_MODEL_ID:-openai.gpt-5.4}"
+# Use a secret manager or a Bedrock token provider for production workloads.
+export AWS_BEARER_TOKEN_BEDROCK="<bedrock-api-key-or-token-provider-output>"
 export AWS_S3_POLICY_BUCKET="<policy-bucket-name>"
 export AWS_S3_POLICY_PREFIX="policies"
 export AWS_OPENSEARCH_ENDPOINT="https://<opensearch-serverless-endpoint>"
@@ -71,9 +87,9 @@ export AWS_DYNAMODB_VENDORS_TABLE="erpgov-migration-vendors"
 export AWS_DYNAMODB_APPROVAL_MATRIX_TABLE="erpgov-migration-approval-matrix"
 ```
 
-## Verify Bedrock Model Access
+## Verify Bedrock Model And Region Access
 
-Bedrock model catalog visibility and runtime invocation are separate permission surfaces. Check both.
+Bedrock model catalog visibility, region support, runtime API support, and token configuration are separate permission surfaces. Check all of them before a cutover.
 
 ```bash verify-bedrock-model
 aws bedrock list-foundation-models \
@@ -86,9 +102,8 @@ aws bedrock get-foundation-model \
   --model-identifier "$AWS_BEDROCK_MODEL_ID"
 ```
 
-If listing fails but runtime invocation succeeds, the issue may be catalog permissions rather than model usability. Still fix the permissions before production because support and operations teams need visibility.
+For GPT-5.4 and GPT-5.5, also confirm your Bedrock API key or token provider can reach the regional Mantle endpoint. For GPT-OSS Converse, confirm `bedrock-runtime` invocation succeeds in the same region.
 
 ## Migration Checkpoint
 
 You should be able to run the same application binary with Azure or AWS providers by changing only environment variables.
-

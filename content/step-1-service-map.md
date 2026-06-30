@@ -43,7 +43,16 @@ def build_retriever(settings):
 
 def build_analysis_provider(settings):
     if settings.llm_provider == "aws_bedrock":
-        return BedrockOpenAIAnalysisProvider(settings)
+        if settings.aws_bedrock_api_mode == "converse":
+            return BedrockGptOssConverseAnalysisProvider(
+                model_id=settings.aws_bedrock_model_id,
+                max_tokens=settings.aws_bedrock_max_tokens,
+            )
+        return BedrockOpenAIAnalysisProvider(
+            model_id=settings.aws_bedrock_model_id,
+            max_tokens=settings.aws_bedrock_max_tokens,
+            aws_region=settings.aws_region,
+        )
     if settings.llm_provider == "azure_openai":
         return AzureOpenAIAnalysisProvider.from_settings(settings)
     return LocalGovernanceAnalysisProvider()

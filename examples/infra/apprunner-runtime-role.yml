@@ -1,47 +1,98 @@
-AppRunnerInstanceRole:
-  Type: AWS::IAM::Role
-  Properties:
-    RoleName: !Sub "${ResourcePrefix}-apprunner-runtime"
-    AssumeRolePolicyDocument:
-      Version: "2012-10-17"
-      Statement:
-        - Effect: Allow
-          Principal:
-            Service: tasks.apprunner.amazonaws.com
-          Action: sts:AssumeRole
-    Policies:
-      - PolicyName: !Sub "${ResourcePrefix}-runtime-access"
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Action:
-                - s3:ListBucket
-              Resource: !GetAtt PolicyBucket.Arn
-            - Effect: Allow
-              Action:
-                - s3:GetObject
-              Resource: !Sub "${PolicyBucket.Arn}/*"
-            - Effect: Allow
-              Action:
-                - dynamodb:GetItem
-                - dynamodb:PutItem
-                - dynamodb:Query
-                - dynamodb:Scan
-                - dynamodb:UpdateItem
-                - dynamodb:BatchWriteItem
-              Resource:
-                - !GetAtt RequestsTable.Arn
-                - !GetAtt AuditEventsTable.Arn
-                - !GetAtt VendorsTable.Arn
-                - !GetAtt ApprovalMatrixTable.Arn
-            - Effect: Allow
-              Action:
-                - bedrock:InvokeModel
-                - bedrock:InvokeModelWithResponseStream
-              Resource: !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/${BedrockModelId}"
-            - Effect: Allow
-              Action:
-                - aoss:APIAccessAll
-              Resource: !GetAtt PolicySearchCollection.Arn
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Minimal App Runner runtime role for ERP Governance Workbench migration examples.
 
+Parameters:
+  ResourcePrefix:
+    Type: String
+    Default: erpgov-migration
+  PolicyBucketArn:
+    Type: String
+    Description: ARN of the S3 bucket that stores policy documents.
+  PolicyObjectArn:
+    Type: String
+    Description: Object ARN pattern for policy documents, for example arn:aws:s3:::bucket/policies/*.
+  RequestsTableArn:
+    Type: String
+    Description: ARN of the DynamoDB table that stores procurement requests.
+  AuditEventsTableArn:
+    Type: String
+    Description: ARN of the DynamoDB table that stores audit events.
+  VendorsTableArn:
+    Type: String
+    Description: ARN of the DynamoDB table that stores vendor records.
+  ApprovalMatrixTableArn:
+    Type: String
+    Description: ARN of the DynamoDB table that stores approval matrix entries.
+  PolicySearchCollectionArn:
+    Type: String
+    Description: ARN of the OpenSearch Serverless collection used for policy retrieval.
+  BedrockApiKeySecretArn:
+    Type: String
+    Description: ARN of the Secrets Manager secret containing AWS_BEARER_TOKEN_BEDROCK.
+  BedrockRuntimeModelId:
+    Type: String
+    Default: openai.gpt-oss-20b-1:0
+    Description: Optional Converse/Invoke model ID for GPT-OSS runtime experiments.
+
+Resources:
+  AppRunnerInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${ResourcePrefix}-apprunner-runtime"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: tasks.apprunner.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: !Sub "${ResourcePrefix}-runtime-access"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: ReadPolicyBucket
+                Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource: !Ref PolicyBucketArn
+              - Sid: ReadPolicyObjects
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource: !Ref PolicyObjectArn
+              - Sid: ReadWriteWorkflowTables
+                Effect: Allow
+                Action:
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:UpdateItem
+                Resource:
+                  - !Ref RequestsTableArn
+                  - !Ref AuditEventsTableArn
+                  - !Ref VendorsTableArn
+                  - !Ref ApprovalMatrixTableArn
+              - Sid: ReadBedrockMantleToken
+                Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource: !Ref BedrockApiKeySecretArn
+              - Sid: InvokeGptOssWithBedrockRuntime
+                Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                  - bedrock:InvokeModelWithResponseStream
+                Resource: !Sub "arn:${AWS::Partition}:bedrock:${AWS::Region}::foundation-model/${BedrockRuntimeModelId}"
+              - Sid: QueryPolicySearch
+                Effect: Allow
+                Action:
+                  - aoss:APIAccessAll
+                Resource: !Ref PolicySearchCollectionArn
+
+Outputs:
+  AppRunnerInstanceRoleArn:
+    Description: Runtime role ARN to attach to the App Runner service.
+    Value: !GetAtt AppRunnerInstanceRole.Arn

@@ -4,24 +4,18 @@ import re
 from dataclasses import asdict, is_dataclass
 from typing import Any
 
-from openai import BedrockOpenAI
+import boto3
 
 from models import GeneratedEscalation, GovernanceAnalysis
 
 
-class BedrockOpenAIAnalysisProvider:
-    source_name = "aws_bedrock_mantle"
+class BedrockGptOssConverseAnalysisProvider:
+    source_name = "aws_bedrock_converse"
 
-    def __init__(
-        self,
-        model_id: str | None = None,
-        max_tokens: int = 700,
-        aws_region: str | None = None,
-    ) -> None:
-        self.model_id = model_id or os.getenv("AWS_BEDROCK_MODEL_ID", "openai.gpt-5.4")
+    def __init__(self, model_id: str | None = None, max_tokens: int = 700) -> None:
+        self.model_id = model_id or os.getenv("AWS_BEDROCK_MODEL_ID", "openai.gpt-oss-20b-1:0")
         self.max_tokens = max_tokens
-        self.aws_region = aws_region or os.getenv("AWS_REGION", "us-east-1")
-        self.client = BedrockOpenAI(aws_region=self.aws_region)
+        self.client = boto3.client("bedrock-runtime", region_name=os.getenv("AWS_REGION", "us-east-1"))
         self.fallback = LocalGovernanceAnalysisProvider()
 
     def generate(self, request, rule_evaluation, policy_citations):
@@ -64,19 +58,27 @@ class BedrockOpenAIAnalysisProvider:
             separators=(",", ":"),
         )
 
-        response = self.client.responses.create(
-            model=self.model_id,
-            instructions=(
-                "Generate concise procurement governance analysis. "
-                "Do not invent policy evidence. "
-                "Keep deterministic findings and approvals unchanged. "
-                "Return only valid JSON."
-            ),
-            input=prompt,
-            max_output_tokens=self.max_tokens,
+        response = self.client.converse(
+            modelId=self.model_id,
+            system=[
+                {
+                    "text": (
+                        "Generate concise procurement governance analysis. "
+                        "Do not invent policy evidence. "
+                        "Keep deterministic findings and approvals unchanged. "
+                        "Return only valid JSON."
+                    )
+                }
+            ],
+            messages=[{"role": "user", "content": [{"text": prompt}]}],
+            inferenceConfig={"maxTokens": self.max_tokens, "temperature": 0.2},
         )
 
-        return extract_json(response.output_text)
+        text = "".join(
+            block.get("text", "")
+            for block in response.get("output", {}).get("message", {}).get("content", [])
+        )
+        return extract_json(text)
 
 
 def extract_json(content: str) -> dict[str, Any]:

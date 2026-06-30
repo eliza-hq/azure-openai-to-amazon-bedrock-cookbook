@@ -5,11 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node scripts/check-public-safety.mjs && npm run build",
+    "test": "node scripts/check-public-safety.mjs && node scripts/check-examples.mjs && npm run build",
     "preview": "npm run build && npx http-server site -p 4173"
   },
   "engines": {
     "node": ">=20"
   }
 }
-

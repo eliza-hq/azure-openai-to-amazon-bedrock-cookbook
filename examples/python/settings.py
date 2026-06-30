@@ -19,6 +19,6 @@ class Settings:
     aws_s3_policy_prefix: str = os.getenv("AWS_S3_POLICY_PREFIX", "policies")
     aws_opensearch_endpoint: str = os.getenv("AWS_OPENSEARCH_ENDPOINT", "")
     aws_opensearch_index: str = os.getenv("AWS_OPENSEARCH_INDEX", "policy-sections")
+    aws_bedrock_api_mode: str = os.getenv("AWS_BEDROCK_API_MODE", "responses")
     aws_bedrock_model_id: str = os.getenv("AWS_BEDROCK_MODEL_ID", "openai.gpt-5.4")
     aws_bedrock_max_tokens: int = int(os.getenv("AWS_BEDROCK_MAX_TOKENS", "700"))
-

@@ -15,6 +15,8 @@ You will:
 
 The important constraint: the model does not decide approvals. Rules decide. Retrieval supports. The model explains.
 
+This is a reference migration pattern, not a complete production Terraform or CDK deployment. The snippets are meant to be copied into an existing Azure-first application and adapted to your organization's AWS accounts, regions, networking, identity, and compliance controls.
+
 ## What you will build
 
 By the end, you will have an AWS-backed version of the same procurement workflow:
@@ -52,6 +54,7 @@ The examples keep model IDs and resource names in configuration. Use the Bedrock
 ```bash quick-start-env
 export AWS_REGION=us-east-1
 export AWS_RESOURCE_PREFIX=erpgov-migration
+export AWS_BEDROCK_API_MODE=responses
 export AWS_BEDROCK_MODEL_ID="${AWS_BEDROCK_MODEL_ID:-openai.gpt-5.4}"
 
 export AZURE_AI_SEARCH_INDEX=policy-sections

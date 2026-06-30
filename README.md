@@ -8,9 +8,15 @@ This public cookbook walks through migrating an Azure-first enterprise GenAI app
 
 The reference application is ERP Governance Workbench: a procurement/vendor governance workflow that creates durable request records, applies deterministic approval rules, retrieves policy evidence, asks the model for interpretation, drafts an escalation, and records audit events.
 
+This is a reference migration pattern, not a complete production Terraform or CDK deployment. Treat the examples as copyable starting points that still need your organization's account, region, network, identity, security, retention, and observability decisions.
+
 ## Audience
 
 This cookbook is for engineering teams that already have an Azure implementation and want a practical migration path to AWS. It assumes Azure is already set up and focuses on the code, configuration, validation checks, and cutover sequence needed to move the workload.
+
+## Model Compatibility
+
+The default model ID is `openai.gpt-5.4`. GPT-5.4 and GPT-5.5 use the Bedrock Mantle endpoint with the Responses API through the OpenAI SDK's `BedrockOpenAI` client. GPT-OSS models can use Bedrock Runtime Converse/Invoke where supported. Do not pair GPT-5.4 with `bedrock-runtime.converse`.
 
 ## Repository Shape
 
@@ -28,7 +34,16 @@ npm run build
 npx http-server site -p 4173
 ```
 
-The project has no runtime npm dependencies. The build uses Node.js only, renders one scrollable `index.html`, and stays portable across GitHub Pages, Cloudflare Pages, and AWS Amplify Hosting.
+The project has no runtime npm dependencies. The build uses Node.js only, renders one scrollable `index.html`, and stays portable across GitHub Pages, Cloudflare Pages, and AWS Amplify Hosting. Running the release checks also requires Python 3 for example validation.
+
+## Release Checks
+
+```bash
+npm test
+python3 -m py_compile examples/python/*.py
+```
+
+`npm test` runs the public-safety scanner, checks example source formatting, parses Python examples, and builds the site. GitHub Actions also runs `py_compile`, validates the CloudFormation example with `cfn-lint`, and runs `shellcheck` against the shell-style environment profiles.
 
 ## Deployment
 
@@ -71,8 +86,9 @@ frontend:
 
 Do not publish real account IDs, tenant IDs, endpoints, screenshots, API keys, connection strings, or evidence exports. Use placeholders such as `<aws-account-id>`, `<azure-search-endpoint>`, and `<bedrock-openai-model-id>`.
 
-Run the release check before publishing:
+Run the release checks before publishing:
 
 ```bash
 npm test
+python3 -m py_compile examples/python/*.py
 ```

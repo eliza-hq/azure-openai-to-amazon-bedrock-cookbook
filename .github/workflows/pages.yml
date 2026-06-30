@@ -27,8 +27,28 @@ jobs:
         with:
           node-version: 20
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Run release checks
         run: npm test
+
+      - name: Compile Python examples
+        run: python -m py_compile examples/python/*.py
+
+      - name: Install example validators
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          python -m pip install cfn-lint
+
+      - name: Validate shell environment profiles
+        run: shellcheck --shell=bash examples/env/*.env.example
+
+      - name: Validate CloudFormation examples
+        run: cfn-lint examples/infra/*.yml
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -48,4 +68,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
